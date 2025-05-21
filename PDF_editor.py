@@ -4,8 +4,8 @@ from pypdf import PdfReader, PdfWriter
 
 def TableOfContents():
     # 設定檔案路徑
-    file_name = "C:\\Lecture\\InformationTheory\\Ch1.pdf"
-    output_file_name = "C:\\Lecture\\InformationTheory\\InformationTheoryLearningNotes.pdf"
+    file_name = "C:\\Lecture\\InformationTheory\\lecture_note.pdf"
+    output_file_name = "C:\\Lecture\\InformationTheory\\InformationTheoryNotes.pdf"
 
     # 打開 PDF 並讀取內容
     reader = PdfReader(file_name)
@@ -29,7 +29,6 @@ def TableOfContents():
     print("原始大綱:")
     display_outlines(outlines)
     '''
-
 
     # 添加新的大綱（書籤）
     chap1 = writer.add_outline_item(title='1. Introduction', page_number=0, parent=None)  # 頁碼是從 0 開始的
@@ -58,18 +57,45 @@ def TableOfContents():
     chap5 = writer.add_outline_item(title='5. Data Compression', page_number=28, parent=None)
     chap5_1 = writer.add_outline_item(title='5.1 Example of Source Codes', page_number=28, parent=chap5)
     chap5_2 = writer.add_outline_item(title='5.2 Kraft-McMillan Theorem', page_number=29, parent=chap5)
-
+    chap5_3 = writer.add_outline_item(title='5.3 Matching UD codes to Sources', page_number=30, parent=chap5)
+    chap5_4 = writer.add_outline_item(title='5.4 Bounds on the Optimal Code Length', page_number=31, parent=chap5)
+    chap5_5 = writer.add_outline_item(title='5.5 Bounds on Wrong Distribution Code Length', page_number=33, parent=chap5)
+    chap5_6 = writer.add_outline_item(title='5.6 Huffman Codes', page_number=34, parent=chap5)
+    chap5_7 = writer.add_outline_item(title='5.7 Optimality of Huffman Codes', page_number=35, parent=chap5)
+    chap5_8 = writer.add_outline_item(title='5.8 Shanon-Fano-Elias Coding', page_number=37, parent=chap5)
+    chap5_9 = writer.add_outline_item(title='5.9 Optimality of Shanon Code', page_number=37, parent=chap5)
+    
+    chap6 = writer.add_outline_item(title='6. Channel Capacity', page_number=40, parent=None)
+    chap6_1 = writer.add_outline_item(title='6.1 Example of Channel Capacity', page_number=40, parent=chap6)
+    chap6_2 = writer.add_outline_item(title='6.2 Symmetric Channels', page_number=42, parent=chap6)
+    chap6_3 = writer.add_outline_item(title='6.3 Channel Coding', page_number=44, parent=chap6)
+    chap6_4 = writer.add_outline_item(title='6.4 Joint Typical Sequences', page_number=45, parent=chap6)
+    chap6_5 = writer.add_outline_item(title='6.5 Channel Coding Theorem', page_number=47, parent=chap6)
+    chap6_6 = writer.add_outline_item(title='6.6 Converse to Channel Coding Theorem', page_number=49, parent=chap6)
+    chap6_7 = writer.add_outline_item(title='6.7 Feedback Capacity', page_number=50, parent=chap6)
+    chap6_8 = writer.add_outline_item(title='6.8 Joint Source Channel Coding Theorem', page_number=52, parent=chap6)
+    
+    chap7 = writer.add_outline_item(title='7. Differential Entropy', page_number=53, parent=None)
+    chap7_1 = writer.add_outline_item(title='7.1 Definitions', page_number=53, parent=chap7)
+    chap7_2 = writer.add_outline_item(title='7.2 AEP for Continuous Random Variables', page_number=55, parent=chap7)
+    chap7_3 = writer.add_outline_item(title='7.3 Joint and Conditional Differential Entropy', page_number=57, parent=chap7)
+    chap7_4 = writer.add_outline_item(title='7.4 Relative Entropy and Differential Entropy', page_number=58, parent=chap7)
+    
+    chap8 = writer.add_outline_item(title='8. Gaussian Channel', page_number=60, parent=None)
+    chap8_1 = writer.add_outline_item(title='8.1 Definitions', page_number=60, parent=chap8)
+    chap8_2 = writer.add_outline_item(title='8.2 Channel Coding Theorem for the Gaussian Channel', page_number=61, parent=chap8)
+    chap8_3 = writer.add_outline_item(title='8.3 Parallel Gaussian Channels', page_number=62, parent=chap8)
+    chap8_4 = writer.add_outline_item(title='8.4 Bandlimited Additive White Gaussian Noise Channels', page_number=64, parent=chap8)
+    
+    chap9 = writer.add_outline_item(title='9. Rate Distortion Theory', page_number=67, parent=None)
+    chap9_1 = writer.add_outline_item(title='9.1 Definitions', page_number=67, parent=chap9)
+    chap9_2 = writer.add_outline_item(title='9.2 Examples of Computing Rate Distortion Functions', page_number=70, parent=chap9)
+    chap9_3 = writer.add_outline_item(title='9.3 Converse to Source Coding Theorem with a Fidelity Critertion', page_number=74, parent=chap9)
     # 將修改後的 PDF 寫入新的文件
     with open(output_file_name, "wb") as output:
         writer.write(output)
 
     print(f"成功寫入新文件: {output_file_name}")
-
-    ### 添加子書籤
-    """
-    parent_bookmark_0 = writer.add_outline_item(title='test', page_number=1, parent=None)
-    writer.add_outline_item(title='test', page_number=2, parent=parent_bookmark_0)
-    """
 
     ### 顯示內容
     """
@@ -112,4 +138,5 @@ def PageInsertion():
         writer.write(f)
 
 if __name__ == "__main__":
-    PageInsertion()
+    TableOfContents()
+    #PageInsertion()
