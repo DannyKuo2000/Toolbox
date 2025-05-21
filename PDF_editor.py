@@ -62,8 +62,8 @@ def TableOfContents():
     chap5_5 = writer.add_outline_item(title='5.5 Bounds on Wrong Distribution Code Length', page_number=33, parent=chap5)
     chap5_6 = writer.add_outline_item(title='5.6 Huffman Codes', page_number=34, parent=chap5)
     chap5_7 = writer.add_outline_item(title='5.7 Optimality of Huffman Codes', page_number=35, parent=chap5)
-    chap5_8 = writer.add_outline_item(title='5.8 Shanon-Fano-Elias Coding', page_number=37, parent=chap5)
-    chap5_9 = writer.add_outline_item(title='5.9 Optimality of Shanon Code', page_number=37, parent=chap5)
+    chap5_8 = writer.add_outline_item(title='5.8 Shannon-Fano-Elias Coding', page_number=37, parent=chap5)
+    chap5_9 = writer.add_outline_item(title='5.9 Optimality of Shannon Code', page_number=37, parent=chap5)
     
     chap6 = writer.add_outline_item(title='6. Channel Capacity', page_number=40, parent=None)
     chap6_1 = writer.add_outline_item(title='6.1 Example of Channel Capacity', page_number=40, parent=chap6)
