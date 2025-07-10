@@ -11,7 +11,7 @@ def boX_exact_score_probability(p, n_win, win_score, lose_score):
     ways = comb(total_games - 1, win_score - 1)
     return ways * (p ** win_score) * ((1 - p) ** lose_score)
 
-### --------- Part 2: Likelihood（支援 log 空間與正則化） ----------
+### --------- Part 2: Likelihood（支援 log 空間、正則化與權重） ----------
 def compute_likelihood(params, matches, team_indices, use_log_space=True, reg_lambda=0.0):
     if use_log_space:
         strengths = np.exp(params)
@@ -26,6 +26,7 @@ def compute_likelihood(params, matches, team_indices, use_log_space=True, reg_la
         bo_str = match['bo']
         score1 = match['score1']
         score2 = match['score2']
+        weight = match.get('weight', 1.0)  # 預設為 1.0
 
         i, j = team_indices[team1], team_indices[team2]
         s_i, s_j = strengths[i], strengths[j]
@@ -49,16 +50,13 @@ def compute_likelihood(params, matches, team_indices, use_log_space=True, reg_la
             prob = boX_exact_score_probability(p_i, 3, win_score, lose_score)
         elif bo_str.lower() == "bo7":
             prob = boX_exact_score_probability(p_i, 4, win_score, lose_score)
-        elif bo_str.lower() == "bo9":
-            prob = boX_exact_score_probability(p_i, 5, win_score, lose_score)
-
         else:
             raise ValueError(f"Unsupported match type: {bo_str}")
 
-        total_log_likelihood += np.log(prob + 1e-12)
+        total_log_likelihood += weight * np.log(prob + 1e-12)
 
     if use_log_space:
-        reg_term = reg_lambda * np.sum((params - 0) ** 2)  # params 是 log-strengths
+        reg_term = reg_lambda * np.sum((params - 0) ** 2)
     else:
         reg_term = reg_lambda * np.sum((params - 1) ** 2)
 
@@ -70,7 +68,7 @@ def estimate_team_strengths(teams, matches, use_log_space=True, reg_lambda=0.01)
     team_indices = {name: i for i, name in enumerate(teams)}
 
     if use_log_space:
-        init_params = np.zeros(N)  # log-strengths 起始點
+        init_params = np.zeros(N)
         result = minimize(
             compute_likelihood,
             init_params,
@@ -80,7 +78,7 @@ def estimate_team_strengths(teams, matches, use_log_space=True, reg_lambda=0.01)
         strengths = np.exp(result.x)
     else:
         init_params = np.ones(N)
-        bounds = [(1e-3, None) for _ in range(N)]
+        bounds = [(1, None) for _ in range(N)]  # 可選: 讓強度 ≥ 1
         result = minimize(
             compute_likelihood,
             init_params,
@@ -99,8 +97,8 @@ def load_matches_from_csv(filename):
     with open(filename, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         expected_fields = {"team1", "team2", "winner", "bo", "score1", "score2"}
-        if set(reader.fieldnames) != expected_fields:
-            raise ValueError(f"CSV 欄位名稱錯誤，應該是：{expected_fields}，但讀到的是：{reader.fieldnames}")
+        if not set(expected_fields).issubset(reader.fieldnames):
+            raise ValueError(f"CSV 欄位名稱應包含：{expected_fields}，實際為：{reader.fieldnames}")
         for row in reader:
             matches.append({
                 "team1": row["team1"],
@@ -109,12 +107,16 @@ def load_matches_from_csv(filename):
                 "bo": row["bo"],
                 "score1": int(row["score1"]),
                 "score2": int(row["score2"]),
+                "weight": float(row.get("weight", 1.0)) if "weight" in row else 1.0
             })
     return matches
 
 def load_matches_from_json(filename):
     with open(filename, encoding='utf-8') as f:
         matches = json.load(f)
+        for match in matches:
+            if "weight" not in match:
+                match["weight"] = 1.0
     return matches
 
 ### --------- 主程式 ----------
@@ -146,8 +148,7 @@ if __name__ == "__main__":
         reg_lambda = float(sys.argv[3]) if len(sys.argv) == 4 else 0.01
         main(sys.argv[1], use_log, reg_lambda)
 
-### Example
-# python StrengthEstimation.py LOL_MSI_2025.csv log 0.05
+# Example:
 # python StrengthEstimation.py LOL_MSI_2025.csv log 0.5
+# python StrengthEstimation.py LOL_MSI_2025.csv log 0.05
 # python StrengthEstimation.py LOL_MSI_2025.csv raw
-###
